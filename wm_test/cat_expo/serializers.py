@@ -6,6 +6,7 @@ from .models import Breed
 from .models import Color
 from .models import Description
 from .models import Nickname
+from .models import Rating
 
 
 class NicknameSerializer(serializers.ModelSerializer):
@@ -111,3 +112,20 @@ class AnimalSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(msg) from err
 
         return instance
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ["animal", "rating", "user"]
+        extra_kwargs = {
+            "user": {"read_only": True},  # User is taken from the request
+        }
+
+    def create(self, validated_data):
+        rating, created = Rating.objects.update_or_create(
+            user=self.context["request"].user,
+            animal=validated_data["animal"],
+            defaults={"rating": validated_data["rating"]},
+        )
+        return rating
