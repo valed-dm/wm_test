@@ -36,12 +36,17 @@ class Nickname(models.Model):
 
 
 class Animal(models.Model):
-    nickname = models.ForeignKey(Nickname, on_delete=models.CASCADE)
-    description = models.ForeignKey(Description, on_delete=models.CASCADE)
-    breed = models.ForeignKey(Breed, on_delete=models.CASCADE)
-    color = models.ForeignKey(Color, on_delete=models.CASCADE)
-    age = models.PositiveIntegerField(null=True, blank=True)
-    user = models.ForeignKey(base.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nickname = models.ForeignKey(Nickname, on_delete=models.CASCADE, unique=False)
+    description = models.OneToOneField(Description, on_delete=models.CASCADE)
+    breed = models.ForeignKey(Breed, on_delete=models.CASCADE, unique=False)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, unique=False)
+    age = models.PositiveIntegerField(null=True, blank=True, unique=False)
+    user = models.ForeignKey(
+        base.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=False
+    )
+
+    class Meta:
+        unique_together = ("user", "nickname")
 
     def __str__(self):
         return f"{self.nickname} ({self.breed}, {self.get_age_display()})"
