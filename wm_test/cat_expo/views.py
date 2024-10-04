@@ -75,6 +75,14 @@ class ByBreedListView(generics.ListAPIView):
 class KittenViewSet(viewsets.ModelViewSet):
     """
     A viewset to handle CRUD operations for Kitten objects.
+    Methods:
+        - list: Retrieve a list of all kittens.
+        - retrieve: Get details of a specific kitten.
+        - create: Create a new kitten. The current user is set as the owner.
+        - update: Update an existing kitten. Only the owner can perform this action.
+        - partial_update: Partially update an existing kitten. Only the owner can
+          perform this action.
+        - destroy: Delete a kitten. Only the owner can perform this action.
     """
 
     queryset = Kitten.objects.all()
@@ -110,6 +118,17 @@ class RatingViewSet(viewsets.ModelViewSet):
     """
     A viewset to handle CRUD operations for Rating objects.
     Allows users to rate kittens, but prevents users from rating their own kittens.
+    Methods:
+        - list: Retrieve a list of all ratings.
+        - retrieve: Get details of a specific rating.
+        - create: Create a new rating. Users cannot rate their own kittens.
+        - update: Update an existing rating. Only the rating's owner can perform
+          this action.
+        - partial_update: Partially update an existing rating. Only the owner can
+          perform this action.
+        - destroy: Delete a rating. Only the owner can perform this action.
+        - rating_info (custom action): Retrieve the average rating and vote count for a
+          specific kitten.
     """
 
     queryset = Rating.objects.all()
