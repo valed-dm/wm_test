@@ -3,57 +3,30 @@ log:
 
 entryPoints:
   web:
-    # http
     address: ':80'
-    http:
-      # https://doc.traefik.io/traefik/routing/entrypoints/#entrypoint
-      redirections:
-        entryPoint:
-          to: web-secure
-
-  web-secure:
-    # https
-    address: ':443'
-
-certificatesResolvers:
-  letsencrypt:
-    # https://doc.traefik.io/traefik/https/acme/#lets-encrypt
-    acme:
-      email: 'dmvaled@gmail.com'
-      storage: /etc/traefik/acme/acme.json
-      # https://doc.traefik.io/traefik/https/acme/#httpchallenge
-      httpChallenge:
-        entryPoint: web
 
 http:
   routers:
-    web-secure-router:
-      rule: 'Host(`example.com`) || Host(`www.example.com`)'
+    web-router:
+      rule: 'Host(`localhost`) || Host(`127.0.0.1`)'
       entryPoints:
-        - web-secure
+        - web
       middlewares:
         - csrf
       service: django
-      tls:
-        # https://doc.traefik.io/traefik/routing/routers/#certresolver
-        certResolver: letsencrypt
 
     web-media-router:
-      rule: '(Host(`example.com`) || Host(`www.example.com`)) && PathPrefix(`/media/`)'
+      rule: '(Host(`localhost`) || Host(`127.0.0.1`)) && PathPrefix(`/media/`)'
       entryPoints:
-        - web-secure
+        - web
       middlewares:
         - csrf
       service: django-media
-      tls:
-        certResolver: letsencrypt
 
   middlewares:
     csrf:
-      # https://doc.traefik.io/traefik/master/middlewares/http/headers/#hostsproxyheaders
-      # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
-        hostsProxyHeaders: ['X-CSRFToken']
+        hostsProxyHeaders: [ 'X-CSRFToken' ]
 
   services:
     django:
@@ -67,7 +40,6 @@ http:
           - url: http://nginx:80
 
 providers:
-  # https://doc.traefik.io/traefik/master/providers/file/
   file:
     filename: /etc/traefik/traefik.yml
     watch: true
