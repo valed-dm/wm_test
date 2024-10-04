@@ -1,10 +1,10 @@
 from django.db import IntegrityError
 from rest_framework import serializers
 
-from .models import Animal
 from .models import Breed
 from .models import Color
 from .models import Description
+from .models import Kitten
 from .models import Nickname
 from .models import Rating
 
@@ -12,7 +12,7 @@ from .models import Rating
 class NicknameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nickname
-        fields = ["nickname"]
+        fields = ["id", "nickname"]
         extra_kwargs = {
             "nickname": {"validators": []},
         }
@@ -21,13 +21,13 @@ class NicknameSerializer(serializers.ModelSerializer):
 class DescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Description
-        fields = ["description"]
+        fields = ["id", "description"]
 
 
 class BreedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Breed
-        fields = ["breed"]
+        fields = ["id", "breed"]
         extra_kwargs = {
             "breed": {"validators": []},
         }
@@ -36,20 +36,20 @@ class BreedSerializer(serializers.ModelSerializer):
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        fields = ["color"]
+        fields = ["id", "color"]
         extra_kwargs = {
             "color": {"validators": []},
         }
 
 
-class AnimalSerializer(serializers.ModelSerializer):
+class KittenSerializer(serializers.ModelSerializer):
     nickname = NicknameSerializer()
     description = DescriptionSerializer()
     breed = BreedSerializer()
     color = ColorSerializer()
 
     class Meta:
-        model = Animal
+        model = Kitten
         fields = ["id", "nickname", "description", "breed", "color", "age", "user"]
 
     def create(self, validated_data):
@@ -65,7 +65,7 @@ class AnimalSerializer(serializers.ModelSerializer):
         color, _ = Color.objects.get_or_create(**color_data)
 
         try:
-            animal = Animal.objects.create(
+            kitten = Kitten.objects.create(
                 nickname=nickname,
                 description=description,
                 breed=breed,
@@ -73,10 +73,10 @@ class AnimalSerializer(serializers.ModelSerializer):
                 **validated_data,
             )
         except IntegrityError as err:
-            msg = f"User already added {nickname} previously"
+            msg = f"User already added kitten {nickname} previously"
             raise serializers.ValidationError(msg) from err
 
-        return animal
+        return kitten
 
     def update(self, instance, validated_data):
         nickname_data = validated_data.pop("nickname", None)
@@ -108,7 +108,7 @@ class AnimalSerializer(serializers.ModelSerializer):
         try:
             instance.save()
         except IntegrityError as err:
-            msg = f"User already added {instance.nickname} previously"
+            msg = f"User already added kitten {instance.nickname} previously"
             raise serializers.ValidationError(msg) from err
 
         return instance
@@ -117,7 +117,7 @@ class AnimalSerializer(serializers.ModelSerializer):
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
-        fields = ["animal", "rating", "user"]
+        fields = ["kitten", "rating", "user"]
         extra_kwargs = {
             "user": {"read_only": True},  # User is taken from the request
         }
@@ -125,7 +125,7 @@ class RatingSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         rating, created = Rating.objects.update_or_create(
             user=self.context["request"].user,
-            animal=validated_data["animal"],
+            kitten=validated_data["kitten"],
             defaults={"rating": validated_data["rating"]},
         )
         return rating
