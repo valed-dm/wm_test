@@ -35,7 +35,7 @@ class Nickname(models.Model):
         return self.nickname
 
 
-class Animal(models.Model):
+class Kitten(models.Model):
     nickname = models.ForeignKey(Nickname, on_delete=models.CASCADE, unique=False)
     description = models.OneToOneField(Description, on_delete=models.CASCADE)
     breed = models.ForeignKey(Breed, on_delete=models.CASCADE, unique=False)
@@ -64,12 +64,12 @@ class Animal(models.Model):
 class Rating(models.Model):
     RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
-    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    kitten = models.ForeignKey(Kitten, on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
     user = models.ForeignKey(base.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ("user", "animal")
+        unique_together = ("user", "kitten")
 
     def __str__(self):
-        return f"Rating {self.rating} for {self.animal}"
+        return f"Rating {self.rating} for {self.kitten}"
