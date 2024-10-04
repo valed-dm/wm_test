@@ -8,6 +8,7 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -37,10 +38,22 @@ urlpatterns += [
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # DRF schema and docs
-    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    # API schema view
+    path(
+        "api/schema/",
+        SpectacularAPIView.as_view(
+            authentication_classes=[], permission_classes=[AllowAny]
+        ),
+        name="api-schema",
+    ),
+    # Swagger UI view
     path(
         "api/docs/",
-        SpectacularSwaggerView.as_view(url_name="api-schema"),
+        SpectacularSwaggerView.as_view(
+            url_name="api-schema",
+            authentication_classes=[],
+            permission_classes=[AllowAny],
+        ),
         name="api-docs",
     ),
 ]
