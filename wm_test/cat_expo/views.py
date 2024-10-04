@@ -8,11 +8,11 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Animal
 from .models import Breed
+from .models import Kitten
 from .models import Rating
-from .serializers import AnimalSerializer
 from .serializers import BreedSerializer
+from .serializers import KittenSerializer
 from .serializers import RatingSerializer
 
 
@@ -38,17 +38,17 @@ class BreedListView(generics.ListAPIView):
 
 # Animals filtered by breed
 class ByBreedListView(generics.ListAPIView):
-    serializer_class = AnimalSerializer
+    serializer_class = KittenSerializer
 
     def get_queryset(self):
         breed_id = self.kwargs["breed_id"]
-        return Animal.objects.filter(breed_id=breed_id)
+        return Kitten.objects.filter(breed_id=breed_id)
 
 
 # CRUD endpoint
-class AnimalViewSet(viewsets.ModelViewSet):
-    queryset = Animal.objects.all()
-    serializer_class = AnimalSerializer
+class KittenViewSet(viewsets.ModelViewSet):
+    queryset = Kitten.objects.all()
+    serializer_class = KittenSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
@@ -68,11 +68,11 @@ class RatingViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Override perform_create to prevent users from rating their own animals.
+        Override perform_create to prevent users from rating their own kittens.
         """
-        animal = serializer.validated_data["animal"]
-        if animal.user == self.request.user:
-            msg = "You cannot rate your own animal."
+        kitten = serializer.validated_data["kitten"]
+        if kitten.user == self.request.user:
+            msg = "You cannot rate your own kitten."
             raise serializers.ValidationError(msg)
 
         serializer.save(user=self.request.user)
@@ -81,13 +81,13 @@ class RatingViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"], url_path="rating-info")
     def rating_info(self, request, pk=None):
         """
-        Returns the average rating and the total number of votes for the given animal.
-        Can be accessed via the URL /api/ratings/<animal_id>/rating-info/.
+        Returns the average rating and the total number of votes for the given kitten.
+        Can be accessed via the URL /api/ratings/<kitten_id>/rating-info/.
         """
         rating_instance = self.get_object()
-        animal = rating_instance.animal
+        kitten = rating_instance.kitten
 
-        ratings = Rating.objects.filter(animal=animal)
+        ratings = Rating.objects.filter(kitten=kitten)
 
         # Get the average rating and total votes
         avg_rating = ratings.aggregate(Avg("rating"))["rating__avg"]
@@ -95,11 +95,11 @@ class RatingViewSet(viewsets.ModelViewSet):
 
         return Response(
             {
-                "animal": animal.id,
-                "animal_name": animal.nickname.nickname,
-                "animal_breed": animal.breed.breed,
-                "animal_description": animal.description.description,
-                "average_rating": avg_rating or 0,  # Default to 0 if no ratings
-                "vote_count": vote_count or 0,  # Default to 0 if no votes
+                "kitten": kitten.id,
+                "kitten_name": kitten.nickname.nickname,
+                "kitten_breed": kitten.breed.breed,
+                "kitten_description": kitten.description.description,
+                "average_rating": avg_rating or 0,
+                "vote_count": vote_count or 0,
             }
         )
