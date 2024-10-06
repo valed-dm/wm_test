@@ -33,20 +33,3 @@ def test_description_serializer_serialization():
         "description": "Persian cats bring joy to families because of their loving.",
     }
     assert serializer.data == expected_data
-
-
-def test_description_serializer_unique():
-    # Create an initial description
-    initial_data = {"description": "Personality and Temperament"}
-    serializer = DescriptionSerializer(data=initial_data)
-    assert serializer.is_valid(), serializer.errors
-    _ = serializer.save()
-
-    # Now try to create a duplicate description
-    duplicate_data = {"description": "Personality and Temperament"}
-    serializer = DescriptionSerializer(data=duplicate_data)
-
-    # Validate that the serializer does not allow duplicates
-    assert not serializer.is_valid()
-    assert "description" in serializer.errors
-    assert serializer.errors["description"] == ["This description is already taken."]

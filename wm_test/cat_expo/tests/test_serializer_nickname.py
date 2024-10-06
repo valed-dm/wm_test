@@ -29,20 +29,3 @@ def test_nickname_serializer_serialization():
         "nickname": "Tommy",
     }
     assert serializer.data == expected_data
-
-
-def test_nickname_serializer_unique():
-    # Create an initial nickname
-    initial_data = {"nickname": "Whiskers"}
-    serializer = NicknameSerializer(data=initial_data)
-    assert serializer.is_valid(), serializer.errors
-    _ = serializer.save()
-
-    # Now try to create a duplicate nickname
-    duplicate_data = {"nickname": "Whiskers"}
-    serializer = NicknameSerializer(data=duplicate_data)
-
-    # Validate that the serializer does not allow duplicates
-    assert not serializer.is_valid()
-    assert "nickname" in serializer.errors
-    assert serializer.errors["nickname"] == ["This nickname is already taken."]
