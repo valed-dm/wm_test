@@ -14,27 +14,7 @@ from .models import Nickname
 from .models import Rating
 
 
-class BaseUniqueFieldSerializer(serializers.ModelSerializer):
-    """
-    Base serializer for models that require unique field validation.
-    """
-
-    @classmethod
-    def validate_unique_field(cls, value):
-        """
-        Check that the field value is unique.
-        """
-        model = cls.Meta.model
-        field_name = cls.Meta.fields[1]  # Assuming the second field is to be validated
-
-        if model.objects.filter(**{field_name: value}).exists():
-            msg = f"This {field_name} is already taken."
-            # Raise ValidationError specific to the 'nickname' field
-            raise serializers.ValidationError({field_name: [msg]})
-        return value
-
-
-class NicknameSerializer(BaseUniqueFieldSerializer):
+class NicknameSerializer(serializers.ModelSerializer):
     """
     Serializer for the Nickname model. Handles serialization and deserialization
     of kitten nicknames, disabling the default uniqueness validator.
@@ -47,12 +27,8 @@ class NicknameSerializer(BaseUniqueFieldSerializer):
             "nickname": {"validators": []},
         }
 
-    def validate(self, attrs):
-        self.validate_unique_field(attrs.get("nickname"))
-        return super().validate(attrs)
 
-
-class DescriptionSerializer(BaseUniqueFieldSerializer):
+class DescriptionSerializer(serializers.ModelSerializer):
     """
     Serializer for the Description model. Handles serialization and deserialization
     of kitten descriptions.
@@ -65,12 +41,8 @@ class DescriptionSerializer(BaseUniqueFieldSerializer):
             "description": {"validators": []},
         }
 
-    def validate(self, attrs):
-        self.validate_unique_field(attrs.get("description"))
-        return super().validate(attrs)
 
-
-class BreedSerializer(BaseUniqueFieldSerializer):
+class BreedSerializer(serializers.ModelSerializer):
     """
     Serializer for the Breed model. Handles serialization and deserialization
     of kitten breeds, disabling the default uniqueness validator.
@@ -83,12 +55,8 @@ class BreedSerializer(BaseUniqueFieldSerializer):
             "breed": {"validators": []},
         }
 
-    def validate(self, attrs):
-        self.validate_unique_field(attrs.get("breed"))
-        return super().validate(attrs)
 
-
-class ColorSerializer(BaseUniqueFieldSerializer):
+class ColorSerializer(serializers.ModelSerializer):
     """
     Serializer for the Color model. Handles serialization and deserialization
     of kitten colors, disabling the default uniqueness validator.
@@ -100,10 +68,6 @@ class ColorSerializer(BaseUniqueFieldSerializer):
         extra_kwargs = {
             "color": {"validators": []},
         }
-
-    def validate(self, attrs):
-        self.validate_unique_field(attrs.get("color"))
-        return super().validate(attrs)
 
 
 class KittenSerializer(serializers.ModelSerializer):
