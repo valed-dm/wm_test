@@ -1,0 +1,61 @@
+{
+  "nickname": {
+    "nickname": "Fluffy"
+  },
+  "description": {
+    "description": "A thick, luxurious coat is only one of the wonderful qualities of the Persian cat.
+    Persian cats bring joy to their families because of their loving personalities and gentle yet playful antics.",
+  },
+  "breed": {
+    "breed": "Persian"
+  },
+  "color": {
+    "color": "Ginger"
+  },
+  "age": 18,
+  "user": 1
+}
+
+{
+  "nickname": {
+    "nickname": "Buffy"
+  },
+  "description": {
+    "description": "If you're looking for a cat that isn't into impressive displays of athleticism,
+    the Persian might be the perfect breed for you. These cats love to lounge,
+    particularly after they reach adulthood. Perhaps that's why some people call them furniture with fur.
+    Don't be fooled by this reputation, though. These cats do exhibit a playful streak,
+    particularly when their people are interested in joining the fun."
+  },
+  "breed": {
+    "breed": "Persian"
+  },
+  "color": {
+    "color": "Ginger"
+  },
+  "age": 18,
+  "user": 1
+}
+
+{
+  "nickname": {
+    "nickname": "Tiffany"
+  },
+  "description": {
+    "description": "Not prone to excessive mischief, Persians are quiet and well-behaved pets."
+  },
+  "breed": {
+    "breed": "Abyssinian"
+  },
+  "color": {
+    "color": "Yellow"
+  },
+  "age": 18,
+  "user": 1
+}
+
+tester@example.com
+tester_12345
+
+master@example.com
+master_12345
