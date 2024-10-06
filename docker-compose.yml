@@ -4,12 +4,10 @@ volumes:
   production_traefik: {}
   production_django_media: {}
 
+
 services:
   django:
-    build:
-      context: .
-      dockerfile: ./compose/production/django/Dockerfile
-    image: wm_test_production_django
+    image: dmvaled/wm_test_django:latest
     volumes:
       - production_django_media:/app/wm_test/media
     depends_on:
@@ -21,10 +19,7 @@ services:
     command: /start
 
   postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: wm_test_production_postgres
+    image: dmvaled/wm_test_postgres:latest
     volumes:
       - production_postgres_data:/var/lib/postgresql/data
       - production_postgres_data_backups:/backups
@@ -32,25 +27,19 @@ services:
       - ./.envs/.production/.postgres
 
   traefik:
-    build:
-      context: .
-      dockerfile: ./compose/production/traefik/Dockerfile
-    image: wm_test_production_traefik
+    image: dmvaled/wm_test_traefik:latest
     depends_on:
       - django
     volumes:
       - production_traefik:/etc/traefik/acme
     ports:
-      - '80:80'   # Only exposing HTTP
+      - '80:80'
 
   redis:
-    image: docker.io/redis:6
+    image: redis:6
 
   nginx:
-    build:
-      context: .
-      dockerfile: ./compose/production/nginx/Dockerfile
-    image: wm_test_production_nginx
+    image: dmvaled/wm_test_nginx:latest
     depends_on:
       - django
     volumes:

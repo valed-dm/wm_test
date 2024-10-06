@@ -1,0 +1,22 @@
+{
+  "nickname": {
+    "nickname": "Tiffany"
+  },
+  "description": {
+    "description": "Not prone to excessive mischief, Persians are quiet and well-behaved pets."
+  },
+  "breed": {
+    "breed": "Abyssinian"
+  },
+  "color": {
+    "color": "Yellow"
+  },
+  "age": 18,
+  "user": 1
+}
+
+tester@example.com
+tester_12345
+
+master@example.com
+master_12345
