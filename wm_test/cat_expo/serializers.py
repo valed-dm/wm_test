@@ -37,9 +37,6 @@ class DescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Description
         fields = ["id", "description"]
-        extra_kwargs = {
-            "description": {"validators": []},
-        }
 
 
 class BreedSerializer(serializers.ModelSerializer):
